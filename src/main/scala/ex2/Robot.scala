@@ -44,15 +44,16 @@ class LoggingRobot(val robot: Robot) extends Robot:
     robot.act()
     println(robot.toString)
 
-class RobotWithBattery(val robot: Robot)(val batteryDecrement: Int) extends Robot:
-  require(batteryDecrement > 0)
+class RobotWithBattery(val robot: Robot)(val turnBatteryDec: Int, val actBatteryDec: Int) extends Robot:
+  require(turnBatteryDec > 0)
+  require(actBatteryDec > 0)
   var battery: Int = 100
   export robot.{position, direction}
-  private def performAction(action: => Unit): Unit =
+  private def performAction(action: => Unit, batteryDec: Int): Unit =
     if battery > 0 then action
-    battery -= batteryDecrement
-  override def turn(dir: Direction): Unit = performAction(robot.turn(dir))
-  override def act(): Unit = performAction(robot.act())
+    battery -= batteryDec
+  override def turn(dir: Direction): Unit = performAction(robot.turn(dir), turnBatteryDec)
+  override def act(): Unit = performAction(robot.act(), actBatteryDec)
 
 class RobotCanFail(val robot: Robot)(val failureProb: Double) extends Robot:
   require(failureProb >= 0.0 && failureProb <= 1.0)

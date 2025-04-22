@@ -5,19 +5,21 @@ import org.scalatest.matchers.should.Matchers
 
 class RobotWithBatteryTest extends AnyFlatSpec with Matchers:
   "A RobotWithBattery" should "not turn or act when out of battery" in :
-    val batteryDecrement = 1
-    val robot = RobotWithBattery(new SimpleRobot((0, 0), Direction.North))(batteryDecrement)
-    val nActions = math.ceil(100.0 / batteryDecrement / 2).toInt
-    for i <- 1 to nActions do robot.turn(Direction.East)
-    for i <- 1 to nActions do robot.act()
+    val turnBatteryDec = 1
+    val actBatteryDec = 2
+    val robot = RobotWithBattery(new SimpleRobot((0, 0), Direction.North))(turnBatteryDec, actBatteryDec)
+    val nTurns = math.ceil(100.0 / 2 / turnBatteryDec).toInt
+    val nActs = math.ceil(100.0 / 2 / actBatteryDec).toInt
+    for i <- 1 to nTurns do robot.turn(Direction.East)
+    for i <- 1 to nActs do robot.act()
     robot.direction should be(Direction.East)
-    robot.position should be((nActions, 0))
+    robot.position should be((nActs, 0))
 
     robot.turn(Direction.South)
     robot.direction should be(Direction.East)
 
     robot.act()
-    robot.position should be((nActions, 0))
+    robot.position should be((nActs, 0))
 
 class RobotCanFailTest extends AnyFlatSpec with Matchers:
   private def testRobot(failureProb: Double): Robot =
