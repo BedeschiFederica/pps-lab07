@@ -18,3 +18,25 @@ class RobotWithBatteryTest extends AnyFlatSpec with Matchers:
 
     robot.act()
     robot.position should be((nActions, 0))
+
+class RobotCanFailTest extends AnyFlatSpec with Matchers:
+  private def testRobot(failureProb: Double): Robot =
+    val robot = RobotCanFail(new SimpleRobot((0, 0), Direction.North))(failureProb)
+    for i <- 1 to 1000 do robot.turn(Direction.East)
+    for i <- 1 to 1000 do robot.act()
+    robot
+
+  "A RobotCanFail" should "always fail with failure probability = 1" in :
+    val robot = testRobot(1)
+    robot.direction should be(Direction.North)
+    robot.position should be((0, 0))
+
+  it should "never fail with failure probability = 0" in :
+    val robot = testRobot(0)
+    robot.direction should be(Direction.East)
+    robot.position should be((1000, 0))
+
+  it should "sometimes fail with failure probability = 0.5" in :
+    val robot = testRobot(0.5)
+    robot.direction should be(Direction.East)
+    robot.position should not be((1000, 0))

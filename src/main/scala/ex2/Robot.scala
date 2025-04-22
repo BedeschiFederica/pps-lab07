@@ -1,5 +1,7 @@
 package ex2
 
+import util.Random
+
 type Position = (Int, Int)
 enum Direction:
   case North, East, South, West
@@ -49,6 +51,14 @@ class RobotWithBattery(val robot: Robot)(val batteryDecrement: Int) extends Robo
   private def performAction(action: => Unit): Unit =
     if battery > 0 then action
     battery -= batteryDecrement
+  override def turn(dir: Direction): Unit = performAction(robot.turn(dir))
+  override def act(): Unit = performAction(robot.act())
+
+class RobotCanFail(val robot: Robot)(val failureProb: Double) extends Robot:
+  require(failureProb >= 0.0 && failureProb <= 1.0)
+  export robot.{position, direction}
+  private def performAction(action: => Unit): Unit =
+    if Random.nextDouble() > failureProb then action
   override def turn(dir: Direction): Unit = performAction(robot.turn(dir))
   override def act(): Unit = performAction(robot.act())
 
