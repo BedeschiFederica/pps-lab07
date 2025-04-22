@@ -45,8 +45,8 @@ class LoggingRobot(val robot: Robot) extends Robot:
     println(robot.toString)
 
 class RobotWithBattery(val robot: Robot)(val turnBatteryDec: Int, val actBatteryDec: Int) extends Robot:
-  require(turnBatteryDec > 0)
-  require(actBatteryDec > 0)
+  require(turnBatteryDec > 0 && turnBatteryDec <= 100)
+  require(actBatteryDec > 0 && actBatteryDec <= 100)
   var battery: Int = 100
   export robot.{position, direction}
   private def performAction(action: => Unit, batteryDec: Int): Unit =
