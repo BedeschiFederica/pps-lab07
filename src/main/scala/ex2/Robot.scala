@@ -63,11 +63,8 @@ class RobotCanFail(val robot: Robot)(val failureProb: Double) extends Robot:
   override def act(): Unit = performAction(robot.act())
 
 class RobotRepeated(val robot: Robot)(val n: Int) extends Robot:
-  export robot.{position, direction}
-  private def performAction(action: => Unit): Unit =
-    for i <- 1 to n do action
-  override def turn(dir: Direction): Unit = performAction(robot.turn(dir))
-  override def act(): Unit = performAction(robot.act())
+  export robot.{position, direction, turn}
+  override def act(): Unit = for i <- 1 to n do robot.act()
 
 @main def testRobot(): Unit =
   val robot = LoggingRobot(SimpleRobot((0, 0), Direction.North))
