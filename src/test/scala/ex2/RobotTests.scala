@@ -45,7 +45,7 @@ class RobotRepeatedTest extends AnyFlatSpec with Matchers:
   "A RobotRepeated" should "perform actions multiple times" in :
     val n = 5
     val robot = RobotRepeated(new SimpleRobot((0, 0), Direction.North))(n)
-    for i <- 1 to 10 do robot.turn(Direction.East)
+    robot.turn(Direction.East)
     for i <- 1 to 10 do robot.act()
     robot.direction should be(Direction.East)
     robot.position should be((10 * n, 0))
